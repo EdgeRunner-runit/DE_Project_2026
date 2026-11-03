@@ -22,12 +22,12 @@
 
 | Role | Name | Enrollment No. | GitHub Username |
 |------|------|----------------|-----------------|
-| Group Lead | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+| Group Lead |Piyush Alagh|2501010333 | https://github.com/EdgeRunner-runit|
+| Member 2 |Aujasya Rajput|2501010564| https://github.com/Aujasyarajput18|
+| Member 3 | Kushal garg| 2501010241| https://github.com/kshlgrg|
+| Member 4 | Aryan Damara| 2501010094| https://github.com/AryanDamara|
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** ____
+**Team No.:** T0132 · **Section:** E  · **Repository URL:** https://github.com/EdgeRunner-runit/DE_Project_2026
 
 ---
 
