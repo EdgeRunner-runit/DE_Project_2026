@@ -1,0 +1,115 @@
+erDiagram
+    cities ||--o{ venues : "hosts (1:N)"
+    cities ||--o{ customers : "locates (1:N)"
+    venues ||--|{ screens : "contains (1:N)"
+    screens ||--|{ seats : "configures (1:N)"
+    screens ||--o{ shows : "schedules (1:N)"
+    movies ||--o{ shows : "features (1:N)"
+    movies ||--o{ movie_reviews : "receives (1:N)"
+    customers ||--o{ movie_reviews : "authors (1:N)"
+    customers ||--o{ bookings : "places (1:N)"
+    shows ||--o{ bookings : "books (1:N)"
+    offers |o--o{ bookings : "applies (0..1:N)"
+    bookings ||--o{ booking_seats : "reserves (1:N)"
+    shows ||--o{ booking_seats : "allocates (1:N)"
+    seats ||--o{ booking_seats : "assigns (1:N)"
+
+    cities {
+        int city_id PK
+        varchar city_name UK
+        varchar state
+    }
+
+    venues {
+        int venue_id PK
+        varchar venue_name
+        int city_id FK
+        varchar chain
+        text address
+    }
+
+    screens {
+        int screen_id PK
+        int venue_id FK
+        varchar screen_name
+        varchar screen_type
+        int total_seats
+    }
+
+    seats {
+        int seat_id PK
+        int screen_id FK
+        varchar row_label
+        int seat_number
+        varchar seat_class
+    }
+
+    movies {
+        int movie_id PK
+        varchar title
+        varchar language
+        varchar certificate
+        smallint duration_min
+        date release_date
+    }
+
+    shows {
+        int show_id PK
+        int movie_id FK
+        int screen_id FK
+        timestamptz starts_at
+        timestamptz ends_at
+        varchar format
+        numeric base_price
+    }
+
+    customers {
+        int customer_id PK
+        varchar full_name
+        varchar email UK
+        varchar phone UK
+        int city_id FK
+        timestamptz created_at
+    }
+
+    offers {
+        varchar offer_code PK
+        text description
+        numeric discount_pct
+        numeric max_discount
+        date valid_from
+        date valid_to
+    }
+
+    bookings {
+        int booking_id PK
+        varchar booking_code UK
+        int customer_id FK
+        int show_id FK
+        timestamptz booked_at
+        smallint num_tickets
+        numeric ticket_amount
+        numeric convenience_fee
+        numeric fnb_amount
+        varchar offer_code FK "Nullable"
+        numeric discount
+        numeric total_amount
+        varchar payment_method
+        varchar status
+    }
+
+    booking_seats {
+        int booking_id FK
+        int show_id PK_FK
+        int seat_id PK_FK
+        numeric price
+    }
+
+    movie_reviews {
+        int review_id PK
+        int movie_id FK
+        int customer_id FK
+        smallint rating
+        text review_text "Nullable"
+        timestamptz created_at
+    }
