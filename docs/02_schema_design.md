@@ -195,6 +195,10 @@ Represents post-viewing customer ratings and feedback.
 
 ## 4. Entity-Relationship Architecture
 
+![BookMyShow ER Diagram](../diagrams/er_diagram.png)
+
+*(High-resolution vector rendering is additionally provided in [`diagrams/er_diagram.svg`](../diagrams/er_diagram.svg)).*
+
 ```mermaid
 erDiagram
     cities ||--o{ venues : "hosts (1:N)"
