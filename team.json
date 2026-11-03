@@ -1,0 +1,11 @@
+{
+  "team_number": "T0132",
+  "group_lead": { "name": "Piyush Alagh", "enrollment_no": "2501010333", "github": "EdgeRunner-runit" },
+  "members": [
+    { "name": "Aujasya Rajput", "enrollment_no": "2501010564", "github": "Aujasyarajput18" },
+    { "name": "Kushal Garg", "enrollment_no": "2501010241", "github": "kshlgrg" },
+    { "name": "Aryan Damara", "enrollment_no": "2501010094", "github": "AryanDamara" }
+  ],
+  "postgres_version": "18.6",
+  "laptop_used_for_benchmarks": "MacBook Pro (Apple M4)"
+}
