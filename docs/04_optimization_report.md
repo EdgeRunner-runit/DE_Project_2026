@@ -194,3 +194,119 @@ WHERE NOT EXISTS (
 * `KOTAK100` (Kotak Saturday Special - 10.00%)
 * `PAYTM50` (Paytm Cashback Special - 10.00%)
 * `SUPER40` (BMS Super Saver - 40.00%)
+
+---
+
+## 5. Write Overhead Analysis
+
+Adding secondary indexes inherently introduces write amplification: every `INSERT`, `UPDATE`, or `DELETE` that touches indexed columns must update the corresponding B-Tree leaf pages. We evaluated the impact of our indexing strategy on the five transaction write patterns (`W01`–`W05`).
+
+### Write Latency Comparison
+
+| Query | Operation | Baseline (ms) | Optimized (ms) | Delta (ms) | % Change | Acceptable? | Technical Justification |
+|:---|:---|---:|---:|---:|---:|:---:|:---|
+| **W01** | Create pending booking (INSERT) | 1.097 | 0.992 | -0.105 | +9.6% | ✅ Yes | Insertion remains sub-millisecond (<1.0 ms). Highly selective partial indexes (`WHERE status = 'PENDING'`) touch only 16 kB B-Trees, keeping insertion buffer dirties negligible. |
+| **W02** | Lock 2 seats for pending booking | 10.850 | 8.576 | -2.274 | +21.0% | ✅ Yes | The subquery finding `min(booking_id) WHERE status = 'PENDING'` is accelerated from a full table scan to an index seek on `idx_bookings_pending_id`. |
+| **W03** | Confirm oldest pending booking (UPDATE) | 1.245 | 0.485 | -0.760 | +61.0% | ✅ Yes | The lookup phase is instantaneous (0.04 ms); updating `status` moves the row out of the partial pending index efficiently. |
+| **W04** | Release expired seat locks (DELETE) | 8.710 | 0.116 | -8.594 | +98.7% | ✅ Yes | Expired candidate identification drops from a 2,161-block sequential scan to a 2-page Index Scan on `idx_bookings_pending_booked_at`. |
+| **W05** | Weekend pricing surge (UPDATE) | 5.978 | 2.229 | -3.749 | +62.7% | ✅ Yes | Filter on `movie_id = 2` uses `idx_shows_movie_starts` to avoid scanning non-matching movie showtimes. |
+
+### Architectural Conclusion on Write Overhead
+Counter-intuitively, **all five write queries demonstrated net latency improvements**. In complex relational workloads, write queries frequently spend >90% of their execution time **searching for qualifying candidate rows** (e.g. locating stale pending reservations or finding matching auditorium seats) rather than executing the physical row mutation. By introducing high-selectivity partial indexes and targeted FK indexes, the reduction in search overhead overwhelmingly compensated for the minor cost of index page maintenance.
+
+---
+
+## 6. Index Storage Footprint & Overhead
+
+All relation and index sizes were queried directly from the PostgreSQL system catalog (`pg_relation_size`, `pg_table_size`) on `bms_seed`:
+
+```sql
+SELECT tablename, pg_size_pretty(pg_table_size('bms.' || tablename)) AS table_size,
+       indexname, pg_size_pretty(pg_relation_size('bms.' || indexname)) AS index_size,
+       round(100.0 * pg_relation_size('bms.' || indexname) / nullif(pg_table_size('bms.' || tablename), 0), 1) AS overhead_pct
+FROM pg_tables t JOIN pg_indexes i ON i.tablename = t.tablename AND i.schemaname = t.schemaname
+WHERE t.schemaname = 'bms' ORDER BY t.tablename, i.indexname;
+```
+
+### Table & Index Storage Inventory
+
+| Table | Heap Table Size | Index Name | Index Type | Index Size | Overhead vs Table | Target Queries |
+|:---|---:|:---|:---|---:|---:|:---|
+| **`bookings`** | 17 MB | `bookings_pkey` | B-Tree (PK) | 3,312 kB | 18.9% | Primary key lookups |
+| | | `bookings_booking_code_key` | B-Tree (Unique) | 6,416 kB | 36.7% | R04 support console |
+| | | `idx_bookings_customer_id` | B-Tree (FK) | 1,960 kB | 11.2% | R05, R12 customer history |
+| | | `idx_bookings_show_id` | B-Tree (FK) | 2,912 kB | 16.6% | R19, R08, W02 box office |
+| | | `idx_bookings_cust_status` | B-Tree (Composite) | 2,728 kB | 15.6% | R05 customer active |
+| | | `idx_bookings_status_date` | B-Tree (Composite) | 4,688 kB | 26.8% | R08, R16 box office |
+| | | `idx_bookings_booked_at_desc`| B-Tree (Sort) | 4,648 kB | 26.6% | R22 deferred pagination |
+| | | `idx_bookings_confirmed_booked_at` | B-Tree (Partial) | 2,576 kB | 14.7% | R08, R20, R21 confirmed |
+| | | `idx_bookings_confirmed_covering` | B-Tree (Covering) | 4,152 kB | 23.7% | R20 Index-Only Scan |
+| | | `idx_bookings_confirmed_show` | B-Tree (Covering) | 4,136 kB | 23.6% | R08, R19 ticket amounts |
+| | | `idx_bookings_pending_id` | B-Tree (Partial) | **16 kB** | **0.1%** | W02, W03 pending queue |
+| | | `idx_bookings_pending_booked_at` | B-Tree (Partial) | **16 kB** | **0.1%** | R09, W04 lock expiry |
+| **`booking_seats`**| 15 MB | `booking_seats_pkey` | B-Tree (PK) | 9,928 kB | 62.9% | `(show_id, seat_id)` unique |
+| | | `uq_booking_seats_booking_seat` | B-Tree (Unique) | 6,616 kB | 41.9% | Schema constraint |
+| | | `idx_booking_seats_booking_id` | B-Tree (FK) | 4,800 kB | 30.4% | W04 cascading deletes |
+| | | `idx_booking_seats_seat_id` | B-Tree (Reverse FK) | 2,160 kB | 13.7% | R11, R17, R24 seat joins |
+| **`shows`** | 11 MB | `shows_pkey` | B-Tree (PK) | 3,536 kB | 31.3% | `show_id` primary key |
+| | | `no_overlapping_shows` | GiST (Exclusion) | 13 MB | 115.7% | Overlap prevention |
+| | | `idx_shows_starts_at` | B-Tree (Range) | 1,136 kB | 10.1% | R01, R07, R16, R18 dates |
+| | | `idx_shows_movie_id` | B-Tree (FK) | 1,144 kB | 10.1% | Movie show catalog |
+| | | `idx_shows_screen_id` | B-Tree (FK) | 1,104 kB | 9.8% | Auditorium show join |
+| | | `idx_shows_movie_starts` | B-Tree (Composite) | 3,000 kB | 26.6% | R02, R19 movie runs |
+| | | `idx_shows_screen_starts_ends` | B-Tree (Composite) | 6,360 kB | 56.3% | R10 cleaning gap |
+| | | `idx_shows_late_june` | B-Tree (Partial Expr)| **168 kB** | **1.5%** | R25 late-night shows |
+| **`seats`** | 5,024 kB | `seats_pkey` | B-Tree (PK) | 2,072 kB | 41.2% | `seat_id` primary key |
+| | | `uq_seats_screen_row_number` | B-Tree (Unique) | 2,904 kB | 57.8% | Physical seat identity |
+| | | `idx_seats_screen_id` | B-Tree (FK) | 664 kB | 13.2% | R03 auditorium layout |
+| | | `idx_seats_covering` | B-Tree (Covering) | 3,064 kB | 61.0% | R11, R24 Index-Only Scan |
+| **`customers`** | 3,872 kB | `customers_pkey` | B-Tree (PK) | 896 kB | 23.1% | `customer_id` primary key |
+| | | `customers_email_key` | B-Tree (Unique) | 2,352 kB | 60.7% | Login lookup |
+| | | `customers_phone_key` | B-Tree (Unique) | 1,248 kB | 32.2% | R23 sign-in lookup |
+| **`movie_reviews`**| 2,088 kB | `movie_reviews_pkey` | B-Tree (PK) | 728 kB | 34.9% | Primary key |
+| | | `uq_reviews_customer_movie` | B-Tree (Unique) | 1,040 kB | 49.8% | 1 review per user/movie |
+| | | `idx_movie_reviews_movie_id` | B-Tree (FK) | 240 kB | 11.5% | R14 movie review join |
+| **`movies`** | 48 kB | `movies_pkey` | B-Tree (PK) | 16 kB | 33.3% | `movie_id` primary key |
+| | | `idx_movies_title_trgm` | GIN (Trigram) | 48 kB | 100.0% | R06 fuzzy title search |
+| **`screens`** | 56 kB | `screens_pkey` / `uq_*` | B-Tree (PK/Unique) | 64 kB | 114.2% | Constraints |
+| | | `idx_screens_venue_id` | B-Tree (FK) | 16 kB | 28.6% | Screen to venue join |
+| **`venues`** | 48 kB | `venues_pkey` | B-Tree (PK) | 16 kB | 33.3% | `venue_id` primary key |
+| | | `idx_venues_city_id` | B-Tree (FK) | 16 kB | 33.3% | City to venue join |
+| **`offers`** | 16 kB | `offers_pkey` | B-Tree (PK) | 16 kB | 100.0% | Promo code PK |
+| **`cities`** | 8 kB | `cities_pkey` / `uq_*` | B-Tree (PK/Unique) | 32 kB | 400.0% | Constraints |
+
+### Global Storage Summary
+* **Total Base Heap Table Size:** **54 MB**
+* **Total Primary Key & Unique Constraint Indexes:** **52 MB**
+* **Total Secondary Optimization Indexes:** **52 MB**
+* **Combined Database Footprint:** **158 MB**
+* **Efficiency Highlight:** The high-frequency transactional partial indexes (`idx_bookings_pending_id` and `idx_bookings_pending_booked_at`) consume just **16 kB each**, delivering a **155× speedup** while contributing less than **0.03%** of total index storage.
+
+---
+
+## 7. Queries That Could Not Be Sped Up & Architectural Justification
+
+An honest analysis of SQL query plan mechanics reveals that certain analytical and lookup queries cannot (and should not) be accelerated by standard secondary B-Trees:
+
+1. **R15 — Capacity Planning (`38.418 ms → 39.907 ms`):**
+   - *Query Pattern:* `SELECT EXTRACT(ISODOW FROM booked_at), EXTRACT(HOUR FROM booked_at), count(*) FROM bookings GROUP BY 1, 2;`
+   - *Explanation:* This query performs an aggregate over the entirety of the 150,094-row `bookings` table without any filtering `WHERE` clause. Every single row in the relation must be read. A sequential scan is the mathematically optimal access path; forcing an index scan would require reading index pages followed by random I/O heap fetches, multiplying latency by 3–4×. In Phase 5, this can only be optimized via a periodically refreshed Materialized View or summary table.
+2. **R21 — Loyalty Top Customers (`46.990 ms → 50.488 ms`):**
+   - *Query Pattern:* Aggregates `bookings WHERE status = 'CONFIRMED' AND booked_at >= '2026-01-01'` grouped by `customer_id`.
+   - *Explanation:* In our seed dataset, 133,568 rows (89% of the entire table) satisfy this condition. Because the query must process 89% of all rows, PostgreSQL's cost estimator correctly recognizes that a sequential scan with parallel worker hash aggregation is significantly cheaper than traversing an index for 133,000 distinct heap tuples.
+3. **R24 — Regional Pricing Breakdown (`67.136 ms → 63.603 ms`):**
+   - *Query Pattern:* Multi-table relational aggregation across all 300,389 `booking_seats` rows joined with `seats`, `screens`, and `venues`.
+   - *Explanation:* Joining 300k child rows with 94k seats requires reading the full tables. While our covering index `idx_seats_covering` eliminated heap lookups on `seats`, the sheer volume of joining 300,000 tuples across 4 tables bounds minimum latency to ~60 ms without pre-aggregated summary tables.
+4. **R03, R04, R06, R23 — Low-Latency Thresholds (`<0.3 ms`):**
+   - *Explanation:* These queries were already operating at sub-millisecond execution times in baseline (0.03 ms to 0.28 ms) using primary key index scans. Variations within ±0.03 ms represent standard OS context-switch and CPU frequency scaling noise rather than execution degradation.
+
+---
+
+## 8. Verification & CP3 Checkpoint Sign-off
+
+- [x] **`sql/05_indexes.sql`:** 17 production secondary indexes committed with full technical justifications and column order reasoning.
+- [x] **`sql/06_optimized_queries.sql`:** Complete query rewrites committed with preserved `-- @ID` markers and tested result equivalence.
+- [x] **`benchmarks/results/optimized/summary.csv`:** Full 3-run benchmark recorded and committed.
+- [x] **`benchmarks/results/optimized/*.txt`:** All 30 raw `EXPLAIN (ANALYZE, BUFFERS)` execution plans archived.
+- [x] **`docs/04_optimization_report.md`:** Master optimization report complete with top 5 plan diffs, write overhead analysis, index relation sizes, and R13 bug resolution.
+
