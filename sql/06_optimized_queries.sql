@@ -102,11 +102,13 @@ ORDER BY booked_at;
 
 -- @R10
 -- Cinema operations: consecutive shows on the same screen with less than 30 minutes for cleaning (June 2026)
+-- Rewritten: Added explicit sargable upper bound on s2.starts_at to restrict index scan range
 SELECT s1.screen_id, s1.show_id, s1.ends_at, s2.show_id AS next_show_id, s2.starts_at,
        s2.starts_at - s1.ends_at AS gap
 FROM shows s1
 JOIN shows s2 ON s2.screen_id = s1.screen_id
              AND s2.starts_at > s1.starts_at
+             AND s2.starts_at < s1.ends_at + interval '30 minutes'
              AND s2.starts_at - s1.ends_at < interval '30 minutes'
 WHERE s1.starts_at >= '2026-06-01' AND s1.starts_at < '2026-07-01'
 ORDER BY gap, s1.screen_id;
