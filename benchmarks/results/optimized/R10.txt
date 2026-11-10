@@ -1,0 +1,60 @@
+=== R10 run 1 ===
+Sort  (cost=164621.29..166142.63 rows=608537 width=44) (actual time=34.124..34.129 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151630
+  ->  Nested Loop  (cost=0.72..87434.64 rows=608537 width=44) (actual time=1.759..34.067 rows=209.00 loops=1)
+        Buffers: shared hit=151622
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.29..1599.62 rows=49267 width=24) (actual time=0.010..3.276 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4440
+        ->  Index Scan using idx_shows_screen_starts_ends on shows s2  (cost=0.42..1.59 rows=12 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+              Filter: ((starts_at - s1.ends_at) < '00:30:00'::interval)
+              Index Searches: 48990
+              Buffers: shared hit=147182
+Planning:
+  Buffers: shared hit=373
+Planning Time: 0.596 ms
+Execution Time: 34.167 ms
+=== R10 run 2 ===
+Sort  (cost=164621.29..166142.63 rows=608537 width=44) (actual time=33.166..33.170 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151630
+  ->  Nested Loop  (cost=0.72..87434.64 rows=608537 width=44) (actual time=1.245..33.109 rows=209.00 loops=1)
+        Buffers: shared hit=151622
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.29..1599.62 rows=49267 width=24) (actual time=0.006..3.175 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4440
+        ->  Index Scan using idx_shows_screen_starts_ends on shows s2  (cost=0.42..1.59 rows=12 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+              Filter: ((starts_at - s1.ends_at) < '00:30:00'::interval)
+              Index Searches: 48990
+              Buffers: shared hit=147182
+Planning:
+  Buffers: shared hit=373
+Planning Time: 0.568 ms
+Execution Time: 33.206 ms
+=== R10 run 3 ===
+Sort  (cost=164621.29..166142.63 rows=608537 width=44) (actual time=33.573..33.577 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151630
+  ->  Nested Loop  (cost=0.72..87434.64 rows=608537 width=44) (actual time=1.401..33.516 rows=209.00 loops=1)
+        Buffers: shared hit=151622
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.29..1599.62 rows=49267 width=24) (actual time=0.007..3.207 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4440
+        ->  Index Scan using idx_shows_screen_starts_ends on shows s2  (cost=0.42..1.59 rows=12 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+              Filter: ((starts_at - s1.ends_at) < '00:30:00'::interval)
+              Index Searches: 48990
+              Buffers: shared hit=147182
+Planning:
+  Buffers: shared hit=373
+Planning Time: 0.623 ms
+Execution Time: 33.615 ms

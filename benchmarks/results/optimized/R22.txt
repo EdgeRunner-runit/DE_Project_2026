@@ -1,0 +1,63 @@
+=== R22 run 1 ===
+Sort  (cost=3330.62..3330.68 rows=25 width=41) (actual time=5.699..5.700 rows=25.00 loops=1)
+  Sort Key: b.booked_at DESC, b.booking_id DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=507
+  ->  Nested Loop  (cost=3118.49..3330.04 rows=25 width=41) (actual time=5.603..5.687 rows=25.00 loops=1)
+        Buffers: shared hit=501
+        ->  Limit  (cost=3118.07..3118.85 rows=25 width=12) (actual time=5.586..5.587 rows=25.00 loops=1)
+              Buffers: shared hit=401
+              ->  Index Only Scan using idx_bookings_booked_at_desc on bookings  (cost=0.42..4679.83 rows=150094 width=12) (actual time=0.006..3.867 rows=100025.00 loops=1)
+                    Heap Fetches: 56
+                    Index Searches: 1
+                    Buffers: shared hit=401
+        ->  Index Scan using bookings_pkey on bookings b  (cost=0.42..8.44 rows=1 width=41) (actual time=0.004..0.004 rows=1.00 loops=25)
+              Index Cond: (booking_id = bookings.booking_id)
+              Index Searches: 25
+              Buffers: shared hit=100
+Planning:
+  Buffers: shared hit=325
+Planning Time: 0.602 ms
+Execution Time: 5.720 ms
+=== R22 run 2 ===
+Sort  (cost=3330.62..3330.68 rows=25 width=41) (actual time=5.366..5.367 rows=25.00 loops=1)
+  Sort Key: b.booked_at DESC, b.booking_id DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=507
+  ->  Nested Loop  (cost=3118.49..3330.04 rows=25 width=41) (actual time=5.284..5.351 rows=25.00 loops=1)
+        Buffers: shared hit=501
+        ->  Limit  (cost=3118.07..3118.85 rows=25 width=12) (actual time=5.272..5.274 rows=25.00 loops=1)
+              Buffers: shared hit=401
+              ->  Index Only Scan using idx_bookings_booked_at_desc on bookings  (cost=0.42..4679.83 rows=150094 width=12) (actual time=0.008..3.571 rows=100025.00 loops=1)
+                    Heap Fetches: 56
+                    Index Searches: 1
+                    Buffers: shared hit=401
+        ->  Index Scan using bookings_pkey on bookings b  (cost=0.42..8.44 rows=1 width=41) (actual time=0.003..0.003 rows=1.00 loops=25)
+              Index Cond: (booking_id = bookings.booking_id)
+              Index Searches: 25
+              Buffers: shared hit=100
+Planning:
+  Buffers: shared hit=325
+Planning Time: 0.643 ms
+Execution Time: 5.391 ms
+=== R22 run 3 ===
+Sort  (cost=3330.62..3330.68 rows=25 width=41) (actual time=5.389..5.390 rows=25.00 loops=1)
+  Sort Key: b.booked_at DESC, b.booking_id DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=507
+  ->  Nested Loop  (cost=3118.49..3330.04 rows=25 width=41) (actual time=5.295..5.377 rows=25.00 loops=1)
+        Buffers: shared hit=501
+        ->  Limit  (cost=3118.07..3118.85 rows=25 width=12) (actual time=5.278..5.280 rows=25.00 loops=1)
+              Buffers: shared hit=401
+              ->  Index Only Scan using idx_bookings_booked_at_desc on bookings  (cost=0.42..4679.83 rows=150094 width=12) (actual time=0.006..3.558 rows=100025.00 loops=1)
+                    Heap Fetches: 56
+                    Index Searches: 1
+                    Buffers: shared hit=401
+        ->  Index Scan using bookings_pkey on bookings b  (cost=0.42..8.44 rows=1 width=41) (actual time=0.004..0.004 rows=1.00 loops=25)
+              Index Cond: (booking_id = bookings.booking_id)
+              Index Searches: 25
+              Buffers: shared hit=100
+Planning:
+  Buffers: shared hit=325
+Planning Time: 0.565 ms
+Execution Time: 5.409 ms
