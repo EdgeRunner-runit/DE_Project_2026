@@ -175,11 +175,13 @@ ORDER BY cancel_pct DESC;
 
 -- @R17
 -- Cinema operations: seats of screen 101 that were never sold for any June 2026 show
+-- Rewritten: pushed down screen_id = 101 into subquery to leverage idx_shows_screen_starts_ends
 SELECT se.seat_id, se.row_label, se.seat_number, se.seat_class
 FROM seats se
 WHERE se.screen_id = 101
   AND NOT EXISTS (SELECT 1 FROM booking_seats bs JOIN shows s ON s.show_id = bs.show_id
                   WHERE bs.seat_id = se.seat_id
+                    AND s.screen_id = 101
                     AND s.starts_at >= '2026-06-01' AND s.starts_at < '2026-07-01')
 ORDER BY se.row_label, se.seat_number;
 
