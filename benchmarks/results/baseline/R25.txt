@@ -1,0 +1,105 @@
+=== R25 run 1 ===
+Limit  (cost=12225.40..12225.52 rows=50 width=24) (actual time=26.196..26.205 rows=50.00 loops=1)
+  Buffers: shared hit=3383
+  ->  Sort  (cost=12225.40..12302.08 rows=30674 width=24) (actual time=26.195..26.202 rows=50.00 loops=1)
+        Sort Key: (count(bs.seat_id)) DESC
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=3383
+        ->  HashAggregate  (cost=10899.69..11206.43 rows=30674 width=24) (actual time=25.595..25.981 rows=4890.00 loops=1)
+              Group Key: s.show_id, sc.total_seats
+              Batches: 1  Memory Usage: 1305kB
+              Buffers: shared hit=3380
+              ->  Hash Join  (cost=4827.98..10669.63 rows=30674 width=20) (actual time=6.296..24.021 rows=12912.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=3380
+                    ->  Hash Right Join  (cost=4812.95..10573.39 rows=30674 width=20) (actual time=6.249..23.022 rows=12912.00 loops=1)
+                          Hash Cond: (bs.show_id = s.show_id)
+                          Buffers: shared hit=3376
+                          ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.009..7.089 rows=300389.00 loops=1)
+                                Buffers: shared hit=1968
+                          ->  Hash  (cost=4608.68..4608.68 rows=16342 width=16) (actual time=6.222..6.224 rows=4890.00 loops=1)
+                                Buckets: 16384  Batches: 1  Memory Usage: 377kB
+                                Buffers: shared hit=1408
+                                ->  Seq Scan on shows s  (cost=0.00..4608.68 rows=16342 width=16) (actual time=2.694..5.921 rows=4890.00 loops=1)
+                                      Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND ((starts_at)::time without time zone >= '22:30:00'::time without time zone))
+                                      Rows Removed by Filter: 155144
+                                      Buffers: shared hit=1408
+                    ->  Hash  (cost=8.90..8.90 rows=490 width=8) (actual time=0.042..0.042 rows=490.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 28kB
+                          Buffers: shared hit=4
+                          ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.003..0.021 rows=490.00 loops=1)
+                                Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=264
+Planning Time: 0.581 ms
+Execution Time: 26.311 ms
+=== R25 run 2 ===
+Limit  (cost=12225.40..12225.52 rows=50 width=24) (actual time=25.890..25.894 rows=50.00 loops=1)
+  Buffers: shared hit=3383
+  ->  Sort  (cost=12225.40..12302.08 rows=30674 width=24) (actual time=25.889..25.891 rows=50.00 loops=1)
+        Sort Key: (count(bs.seat_id)) DESC
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=3383
+        ->  HashAggregate  (cost=10899.69..11206.43 rows=30674 width=24) (actual time=25.284..25.666 rows=4890.00 loops=1)
+              Group Key: s.show_id, sc.total_seats
+              Batches: 1  Memory Usage: 1305kB
+              Buffers: shared hit=3380
+              ->  Hash Join  (cost=4827.98..10669.63 rows=30674 width=20) (actual time=6.258..23.777 rows=12912.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=3380
+                    ->  Hash Right Join  (cost=4812.95..10573.39 rows=30674 width=20) (actual time=6.209..22.784 rows=12912.00 loops=1)
+                          Hash Cond: (bs.show_id = s.show_id)
+                          Buffers: shared hit=3376
+                          ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.008..7.084 rows=300389.00 loops=1)
+                                Buffers: shared hit=1968
+                          ->  Hash  (cost=4608.68..4608.68 rows=16342 width=16) (actual time=6.184..6.185 rows=4890.00 loops=1)
+                                Buckets: 16384  Batches: 1  Memory Usage: 377kB
+                                Buffers: shared hit=1408
+                                ->  Seq Scan on shows s  (cost=0.00..4608.68 rows=16342 width=16) (actual time=2.612..5.874 rows=4890.00 loops=1)
+                                      Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND ((starts_at)::time without time zone >= '22:30:00'::time without time zone))
+                                      Rows Removed by Filter: 155144
+                                      Buffers: shared hit=1408
+                    ->  Hash  (cost=8.90..8.90 rows=490 width=8) (actual time=0.043..0.043 rows=490.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 28kB
+                          Buffers: shared hit=4
+                          ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.002..0.022 rows=490.00 loops=1)
+                                Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=264
+Planning Time: 0.581 ms
+Execution Time: 25.997 ms
+=== R25 run 3 ===
+Limit  (cost=12225.40..12225.52 rows=50 width=24) (actual time=25.935..25.939 rows=50.00 loops=1)
+  Buffers: shared hit=3383
+  ->  Sort  (cost=12225.40..12302.08 rows=30674 width=24) (actual time=25.934..25.936 rows=50.00 loops=1)
+        Sort Key: (count(bs.seat_id)) DESC
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=3383
+        ->  HashAggregate  (cost=10899.69..11206.43 rows=30674 width=24) (actual time=25.321..25.704 rows=4890.00 loops=1)
+              Group Key: s.show_id, sc.total_seats
+              Batches: 1  Memory Usage: 1305kB
+              Buffers: shared hit=3380
+              ->  Hash Join  (cost=4827.98..10669.63 rows=30674 width=20) (actual time=6.208..23.804 rows=12912.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=3380
+                    ->  Hash Right Join  (cost=4812.95..10573.39 rows=30674 width=20) (actual time=6.160..22.819 rows=12912.00 loops=1)
+                          Hash Cond: (bs.show_id = s.show_id)
+                          Buffers: shared hit=3376
+                          ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.006..7.137 rows=300389.00 loops=1)
+                                Buffers: shared hit=1968
+                          ->  Hash  (cost=4608.68..4608.68 rows=16342 width=16) (actual time=6.135..6.135 rows=4890.00 loops=1)
+                                Buckets: 16384  Batches: 1  Memory Usage: 377kB
+                                Buffers: shared hit=1408
+                                ->  Seq Scan on shows s  (cost=0.00..4608.68 rows=16342 width=16) (actual time=2.613..5.849 rows=4890.00 loops=1)
+                                      Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND ((starts_at)::time without time zone >= '22:30:00'::time without time zone))
+                                      Rows Removed by Filter: 155144
+                                      Buffers: shared hit=1408
+                    ->  Hash  (cost=8.90..8.90 rows=490 width=8) (actual time=0.042..0.042 rows=490.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 28kB
+                          Buffers: shared hit=4
+                          ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.003..0.022 rows=490.00 loops=1)
+                                Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=264
+Planning Time: 0.574 ms
+Execution Time: 26.049 ms
