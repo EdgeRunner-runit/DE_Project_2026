@@ -214,12 +214,13 @@ ORDER BY tickets_sold DESC, s.starts_at;
 
 -- @R20
 -- Finance: daily collections and running total for June 2026
+-- Rewritten: replaced non-sargable booked_at::date filter with half-open interval to leverage covering partial index
 SELECT day, collections, sum(collections) OVER (ORDER BY day) AS running_total
 FROM (
     SELECT booked_at::date AS day, sum(total_amount) AS collections
     FROM bookings
     WHERE status = 'CONFIRMED'
-      AND booked_at::date BETWEEN '2026-06-01' AND '2026-06-30'
+      AND booked_at >= '2026-06-01 00:00:00+05:30' AND booked_at < '2026-07-01 00:00:00+05:30'
     GROUP BY 1
 ) d
 ORDER BY day;
@@ -235,11 +236,17 @@ LIMIT 20;
 
 -- @R22
 -- Support console: all bookings, newest first, page 4,001 (25 per page)
-SELECT booking_id, booking_code, customer_id, show_id, status, booked_at
-FROM bookings
-ORDER BY booked_at DESC
-OFFSET 100000
-LIMIT 25;
+-- Rewritten: deferred join pattern to avoid heap lookups for 100,000 skipped rows
+SELECT b.booking_id, b.booking_code, b.customer_id, b.show_id, b.status, b.booked_at
+FROM (
+    SELECT booking_id
+    FROM bookings
+    ORDER BY booked_at DESC, booking_id DESC
+    OFFSET 100000
+    LIMIT 25
+) p
+JOIN bookings b ON b.booking_id = p.booking_id
+ORDER BY b.booked_at DESC, b.booking_id DESC;
 
 -- @R23
 -- Sign-in with mobile number
