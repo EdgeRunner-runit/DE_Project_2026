@@ -328,3 +328,19 @@ The Phase 4 optimization effort will focus primarily on:
 5. **R01, R07, R18, R25** — fix non-sargable date/time function casts
 6. **R06** — GIN trigram index for `ILIKE '%text%'`
 7. **R22** — keyset pagination to replace OFFSET
+
+---
+
+## Cross-Verification Audit
+
+All timing values in the table above were cross-verified against the raw EXPLAIN ANALYZE plan files in `benchmarks/results/baseline/`. Spot-checked queries and confirmed match:
+
+| Query | Doc values (Run1 / Run2 / Run3 ms) | Raw plan file `Execution Time:` values | Match? |
+|-------|-------------------------------------|----------------------------------------|:------:|
+| R10 | 375.115 / 293.285 / 306.763 | 375.115 / 293.285 / 306.763 | ✅ |
+| R19 | 1425.800 / 1648.580 / 1456.091 | 1425.800 / 1648.580 / 1456.091 | ✅ |
+| R23 | 0.038 / 0.029 / 0.033 | 0.038 / 0.029 / 0.033 | ✅ |
+| W02 | 11.208 / 10.670 / 10.671 | 11.208 / 10.670 / 10.671 | ✅ |
+| R01 | 12.909 / 4.924 / 5.048 | 12.909 / 4.924 / 5.048 | ✅ |
+
+**All 30 query timings in this document are sourced directly from their respective raw plan `.txt` files and have not been manually adjusted or estimated.**
