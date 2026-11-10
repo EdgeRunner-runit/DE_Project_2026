@@ -169,6 +169,22 @@ CREATE INDEX IF NOT EXISTS idx_bookings_confirmed_booked_at
   ON bookings (booked_at) 
   WHERE status = 'CONFIRMED';
 
+-- Targets: R20 (Finance daily collections running total)
+-- Justification: Covering partial index storing booked_at in the key and total_amount
+--   in leaf payload. Enables pure Index-Only Scan without table page fetches.
+CREATE INDEX IF NOT EXISTS idx_bookings_confirmed_covering
+  ON bookings (booked_at)
+  INCLUDE (total_amount)
+  WHERE status = 'CONFIRMED';
+
+-- Targets: R08, R19 (Box-office reporting)
+-- Justification: Covering partial index connecting show_id directly with ticket_amount
+--   for confirmed bookings, speeding up revenue aggregations.
+CREATE INDEX IF NOT EXISTS idx_bookings_confirmed_show
+  ON bookings (show_id)
+  INCLUDE (ticket_amount)
+  WHERE status = 'CONFIRMED';
+
 
 -- =====================================================================
 -- GROUP 6: PAGINATION & COVERING INDEXES
