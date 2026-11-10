@@ -1,0 +1,45 @@
+=== R15 run 1 ===
+Sort  (cost=15336.07..15514.84 rows=71510 width=72) (actual time=38.286..38.289 rows=168.00 loops=1)
+  Sort Key: (EXTRACT(isodow FROM booked_at)), (EXTRACT(hour FROM booked_at))
+  Sort Method: quicksort  Memory: 31kB
+  Buffers: shared hit=2187
+  ->  HashAggregate  (cost=5561.11..6633.77 rows=71510 width=72) (actual time=38.042..38.184 rows=168.00 loops=1)
+        Group Key: EXTRACT(isodow FROM booked_at), EXTRACT(hour FROM booked_at)
+        Batches: 1  Memory Usage: 1057kB
+        Buffers: shared hit=2184
+        ->  Seq Scan on bookings  (cost=0.00..4435.41 rows=150094 width=64) (actual time=0.029..25.138 rows=150094.00 loops=1)
+              Buffers: shared hit=2184
+Planning:
+  Buffers: shared hit=136
+Planning Time: 0.225 ms
+Execution Time: 38.400 ms
+=== R15 run 2 ===
+Sort  (cost=15336.07..15514.84 rows=71510 width=72) (actual time=38.708..38.712 rows=168.00 loops=1)
+  Sort Key: (EXTRACT(isodow FROM booked_at)), (EXTRACT(hour FROM booked_at))
+  Sort Method: quicksort  Memory: 31kB
+  Buffers: shared hit=2187
+  ->  HashAggregate  (cost=5561.11..6633.77 rows=71510 width=72) (actual time=38.502..38.644 rows=168.00 loops=1)
+        Group Key: EXTRACT(isodow FROM booked_at), EXTRACT(hour FROM booked_at)
+        Batches: 1  Memory Usage: 1057kB
+        Buffers: shared hit=2184
+        ->  Seq Scan on bookings  (cost=0.00..4435.41 rows=150094 width=64) (actual time=0.014..25.676 rows=150094.00 loops=1)
+              Buffers: shared hit=2184
+Planning:
+  Buffers: shared hit=136
+Planning Time: 0.214 ms
+Execution Time: 38.815 ms
+=== R15 run 3 ===
+Sort  (cost=15336.07..15514.84 rows=71510 width=72) (actual time=37.888..37.892 rows=168.00 loops=1)
+  Sort Key: (EXTRACT(isodow FROM booked_at)), (EXTRACT(hour FROM booked_at))
+  Sort Method: quicksort  Memory: 31kB
+  Buffers: shared hit=2187
+  ->  HashAggregate  (cost=5561.11..6633.77 rows=71510 width=72) (actual time=37.592..37.785 rows=168.00 loops=1)
+        Group Key: EXTRACT(isodow FROM booked_at), EXTRACT(hour FROM booked_at)
+        Batches: 1  Memory Usage: 1057kB
+        Buffers: shared hit=2184
+        ->  Seq Scan on bookings  (cost=0.00..4435.41 rows=150094 width=64) (actual time=0.018..24.923 rows=150094.00 loops=1)
+              Buffers: shared hit=2184
+Planning:
+  Buffers: shared hit=136
+Planning Time: 0.221 ms
+Execution Time: 38.039 ms

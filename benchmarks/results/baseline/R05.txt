@@ -1,0 +1,117 @@
+=== R05 run 1 ===
+Sort  (cost=4499.11..4499.11 rows=1 width=63) (actual time=9.218..9.219 rows=2.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2228
+  ->  Nested Loop  (cost=0.42..4499.10 rows=1 width=63) (actual time=4.812..9.209 rows=2.00 loops=1)
+        Join Filter: (sc.venue_id = v.venue_id)
+        Rows Removed by Join Filter: 43
+        Buffers: shared hit=2225
+        ->  Nested Loop  (cost=0.42..4493.95 rows=1 width=42) (actual time=4.806..9.201 rows=2.00 loops=1)
+              Join Filter: (s.screen_id = sc.screen_id)
+              Rows Removed by Join Filter: 154
+              Buffers: shared hit=2221
+              ->  Nested Loop  (cost=0.42..4478.92 rows=1 width=42) (actual time=4.799..9.188 rows=2.00 loops=1)
+                    Join Filter: (m.movie_id = s.movie_id)
+                    Rows Removed by Join Filter: 230
+                    Buffers: shared hit=2217
+                    ->  Nested Loop  (cost=0.42..4469.17 rows=1 width=29) (actual time=4.782..9.165 rows=2.00 loops=1)
+                          Buffers: shared hit=2212
+                          ->  Seq Scan on bookings b  (cost=0.00..4435.41 rows=4 width=17) (actual time=1.087..9.098 rows=7.00 loops=1)
+                                Filter: ((customer_id = 1331) AND ((status)::text = 'CONFIRMED'::text))
+                                Rows Removed by Filter: 150087
+                                Buffers: shared hit=2184
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.42..8.44 rows=1 width=20) (actual time=0.007..0.007 rows=0.29 loops=7)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 7
+                                Buffers: shared hit=28
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.005..0.008 rows=116.00 loops=2)
+                          Buffers: shared hit=5
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.002..0.003 rows=78.00 loops=2)
+                    Buffers: shared hit=4
+        ->  Seq Scan on venues v  (cost=0.00..3.40 rows=140 width=29) (actual time=0.002..0.003 rows=22.50 loops=2)
+              Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=416
+Planning Time: 0.754 ms
+Execution Time: 9.251 ms
+=== R05 run 2 ===
+Sort  (cost=4499.11..4499.11 rows=1 width=63) (actual time=8.046..8.048 rows=2.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2228
+  ->  Nested Loop  (cost=0.42..4499.10 rows=1 width=63) (actual time=4.078..8.038 rows=2.00 loops=1)
+        Join Filter: (sc.venue_id = v.venue_id)
+        Rows Removed by Join Filter: 43
+        Buffers: shared hit=2225
+        ->  Nested Loop  (cost=0.42..4493.95 rows=1 width=42) (actual time=4.074..8.032 rows=2.00 loops=1)
+              Join Filter: (s.screen_id = sc.screen_id)
+              Rows Removed by Join Filter: 154
+              Buffers: shared hit=2221
+              ->  Nested Loop  (cost=0.42..4478.92 rows=1 width=42) (actual time=4.070..8.021 rows=2.00 loops=1)
+                    Join Filter: (m.movie_id = s.movie_id)
+                    Rows Removed by Join Filter: 230
+                    Buffers: shared hit=2217
+                    ->  Nested Loop  (cost=0.42..4469.17 rows=1 width=29) (actual time=4.056..8.002 rows=2.00 loops=1)
+                          Buffers: shared hit=2212
+                          ->  Seq Scan on bookings b  (cost=0.00..4435.41 rows=4 width=17) (actual time=0.965..7.958 rows=7.00 loops=1)
+                                Filter: ((customer_id = 1331) AND ((status)::text = 'CONFIRMED'::text))
+                                Rows Removed by Filter: 150087
+                                Buffers: shared hit=2184
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.42..8.44 rows=1 width=20) (actual time=0.006..0.006 rows=0.29 loops=7)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 7
+                                Buffers: shared hit=28
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.003..0.005 rows=116.00 loops=2)
+                          Buffers: shared hit=5
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.001..0.003 rows=78.00 loops=2)
+                    Buffers: shared hit=4
+        ->  Seq Scan on venues v  (cost=0.00..3.40 rows=140 width=29) (actual time=0.001..0.002 rows=22.50 loops=2)
+              Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=416
+Planning Time: 0.735 ms
+Execution Time: 8.081 ms
+=== R05 run 3 ===
+Sort  (cost=4499.11..4499.11 rows=1 width=63) (actual time=7.925..7.926 rows=2.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2228
+  ->  Nested Loop  (cost=0.42..4499.10 rows=1 width=63) (actual time=4.072..7.917 rows=2.00 loops=1)
+        Join Filter: (sc.venue_id = v.venue_id)
+        Rows Removed by Join Filter: 43
+        Buffers: shared hit=2225
+        ->  Nested Loop  (cost=0.42..4493.95 rows=1 width=42) (actual time=4.068..7.910 rows=2.00 loops=1)
+              Join Filter: (s.screen_id = sc.screen_id)
+              Rows Removed by Join Filter: 154
+              Buffers: shared hit=2221
+              ->  Nested Loop  (cost=0.42..4478.92 rows=1 width=42) (actual time=4.062..7.899 rows=2.00 loops=1)
+                    Join Filter: (m.movie_id = s.movie_id)
+                    Rows Removed by Join Filter: 230
+                    Buffers: shared hit=2217
+                    ->  Nested Loop  (cost=0.42..4469.17 rows=1 width=29) (actual time=4.045..7.876 rows=2.00 loops=1)
+                          Buffers: shared hit=2212
+                          ->  Seq Scan on bookings b  (cost=0.00..4435.41 rows=4 width=17) (actual time=0.965..7.831 rows=7.00 loops=1)
+                                Filter: ((customer_id = 1331) AND ((status)::text = 'CONFIRMED'::text))
+                                Rows Removed by Filter: 150087
+                                Buffers: shared hit=2184
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.42..8.44 rows=1 width=20) (actual time=0.005..0.005 rows=0.29 loops=7)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 7
+                                Buffers: shared hit=28
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.005..0.008 rows=116.00 loops=2)
+                          Buffers: shared hit=5
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.001..0.003 rows=78.00 loops=2)
+                    Buffers: shared hit=4
+        ->  Seq Scan on venues v  (cost=0.00..3.40 rows=140 width=29) (actual time=0.002..0.002 rows=22.50 loops=2)
+              Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=416
+Planning Time: 0.698 ms
+Execution Time: 7.956 ms

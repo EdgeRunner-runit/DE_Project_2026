@@ -1,0 +1,93 @@
+=== R17 run 1 ===
+Sort  (cost=10743.83..10744.21 rows=155 width=17) (actual time=36.055..36.056 rows=28.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=3386
+  ->  Hash Right Anti Join  (cost=4687.07..10738.19 rows=155 width=17) (actual time=36.011..36.015 rows=28.00 loops=1)
+        Hash Cond: (bs.seat_id = se.seat_id)
+        Buffers: shared hit=3380
+        ->  Hash Join  (cost=4421.32..10181.76 rows=92022 width=4) (actual time=7.512..33.195 rows=109867.00 loops=1)
+              Hash Cond: (bs.show_id = s.show_id)
+              Buffers: shared hit=3376
+              ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.003..7.301 rows=300389.00 loops=1)
+                    Buffers: shared hit=1968
+              ->  Hash  (cost=3808.51..3808.51 rows=49025 width=4) (actual time=7.475..7.475 rows=48990.00 loops=1)
+                    Buckets: 65536  Batches: 1  Memory Usage: 2235kB
+                    Buffers: shared hit=1408
+                    ->  Seq Scan on shows s  (cost=0.00..3808.51 rows=49025 width=4) (actual time=2.688..5.285 rows=48990.00 loops=1)
+                          Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Rows Removed by Filter: 111044
+                          Buffers: shared hit=1408
+        ->  Hash  (cost=263.71..263.71 rows=163 width=17) (actual time=0.025..0.025 rows=40.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 11kB
+              Buffers: shared hit=4
+              ->  Index Scan using uq_seats_screen_row_number on seats se  (cost=0.29..263.71 rows=163 width=17) (actual time=0.017..0.020 rows=40.00 loops=1)
+                    Index Cond: (screen_id = 101)
+                    Index Searches: 1
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=275
+Planning Time: 0.637 ms
+Execution Time: 36.104 ms
+=== R17 run 2 ===
+Sort  (cost=10743.83..10744.21 rows=155 width=17) (actual time=37.805..37.808 rows=28.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=3386
+  ->  Hash Right Anti Join  (cost=4687.07..10738.19 rows=155 width=17) (actual time=37.767..37.772 rows=28.00 loops=1)
+        Hash Cond: (bs.seat_id = se.seat_id)
+        Buffers: shared hit=3380
+        ->  Hash Join  (cost=4421.32..10181.76 rows=92022 width=4) (actual time=7.521..34.907 rows=109867.00 loops=1)
+              Hash Cond: (bs.show_id = s.show_id)
+              Buffers: shared hit=3376
+              ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.003..7.325 rows=300389.00 loops=1)
+                    Buffers: shared hit=1968
+              ->  Hash  (cost=3808.51..3808.51 rows=49025 width=4) (actual time=7.481..7.482 rows=48990.00 loops=1)
+                    Buckets: 65536  Batches: 1  Memory Usage: 2235kB
+                    Buffers: shared hit=1408
+                    ->  Seq Scan on shows s  (cost=0.00..3808.51 rows=49025 width=4) (actual time=2.620..5.235 rows=48990.00 loops=1)
+                          Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Rows Removed by Filter: 111044
+                          Buffers: shared hit=1408
+        ->  Hash  (cost=263.71..263.71 rows=163 width=17) (actual time=0.016..0.016 rows=40.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 11kB
+              Buffers: shared hit=4
+              ->  Index Scan using uq_seats_screen_row_number on seats se  (cost=0.29..263.71 rows=163 width=17) (actual time=0.008..0.011 rows=40.00 loops=1)
+                    Index Cond: (screen_id = 101)
+                    Index Searches: 1
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=275
+Planning Time: 0.587 ms
+Execution Time: 37.877 ms
+=== R17 run 3 ===
+Sort  (cost=10743.83..10744.21 rows=155 width=17) (actual time=37.015..37.018 rows=28.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=3386
+  ->  Hash Right Anti Join  (cost=4687.07..10738.19 rows=155 width=17) (actual time=36.973..36.978 rows=28.00 loops=1)
+        Hash Cond: (bs.seat_id = se.seat_id)
+        Buffers: shared hit=3380
+        ->  Hash Join  (cost=4421.32..10181.76 rows=92022 width=4) (actual time=7.389..34.154 rows=109867.00 loops=1)
+              Hash Cond: (bs.show_id = s.show_id)
+              Buffers: shared hit=3376
+              ->  Seq Scan on booking_seats bs  (cost=0.00..4971.89 rows=300389 width=8) (actual time=0.003..7.339 rows=300389.00 loops=1)
+                    Buffers: shared hit=1968
+              ->  Hash  (cost=3808.51..3808.51 rows=49025 width=4) (actual time=7.350..7.350 rows=48990.00 loops=1)
+                    Buckets: 65536  Batches: 1  Memory Usage: 2235kB
+                    Buffers: shared hit=1408
+                    ->  Seq Scan on shows s  (cost=0.00..3808.51 rows=49025 width=4) (actual time=2.800..5.312 rows=48990.00 loops=1)
+                          Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Rows Removed by Filter: 111044
+                          Buffers: shared hit=1408
+        ->  Hash  (cost=263.71..263.71 rows=163 width=17) (actual time=0.016..0.016 rows=40.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 11kB
+              Buffers: shared hit=4
+              ->  Index Scan using uq_seats_screen_row_number on seats se  (cost=0.29..263.71 rows=163 width=17) (actual time=0.007..0.011 rows=40.00 loops=1)
+                    Index Cond: (screen_id = 101)
+                    Index Searches: 1
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=275
+Planning Time: 0.586 ms
+Execution Time: 37.061 ms
