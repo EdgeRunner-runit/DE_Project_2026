@@ -266,12 +266,13 @@ ORDER BY v.city_id, se.seat_class;
 
 -- @R25
 -- Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026
+-- Rewritten: replaced STABLE cast with immutable timezone projection matching idx_shows_late_june
 SELECT s.show_id, s.starts_at, sc.total_seats, count(bs.seat_id) AS sold
 FROM shows s
 JOIN screens sc ON sc.screen_id = s.screen_id
 LEFT JOIN booking_seats bs ON bs.show_id = s.show_id
-WHERE s.starts_at::time >= '22:30'
-  AND s.starts_at >= '2026-06-01' AND s.starts_at < '2026-07-01'
+WHERE (s.starts_at AT TIME ZONE 'Asia/Kolkata')::time >= '22:30'
+  AND s.starts_at >= '2026-06-01 00:00:00+05:30' AND s.starts_at < '2026-07-01 00:00:00+05:30'
 GROUP BY s.show_id, s.starts_at, sc.total_seats
 ORDER BY sold DESC
 LIMIT 50;

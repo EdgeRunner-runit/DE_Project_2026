@@ -123,6 +123,16 @@ CREATE INDEX IF NOT EXISTS idx_shows_screen_starts_ends
 CREATE INDEX IF NOT EXISTS idx_shows_starts_at 
   ON shows (starts_at);
 
+-- Targets: R25 (Late night shows in June 2026)
+-- Justification: Timezone-cast expression allows an immutable partial index on
+--   late-night shows (>= 22:30) in June 2026, replacing full table scan of 160,000 shows
+--   with an index scan selecting only the ~4,890 matching late-night screenings.
+CREATE INDEX IF NOT EXISTS idx_shows_late_june 
+  ON shows (screen_id, starts_at) 
+  WHERE (((starts_at AT TIME ZONE 'Asia/Kolkata')::time >= '22:30') 
+    AND starts_at >= '2026-06-01 00:00:00+05:30' 
+    AND starts_at < '2026-07-01 00:00:00+05:30');
+
 
 -- =====================================================================
 -- GROUP 4: CUSTOMER BOOKINGS & ORDER FILTERING
