@@ -133,9 +133,13 @@ ORDER BY times_booked DESC, b.customer_id;
 
 -- @R13
 -- Partnerships: offers that have never been redeemed
+-- Rewritten: Fixed SQL NULL bug by replacing NOT IN with NOT EXISTS
 SELECT o.offer_code, o.description, o.discount_pct
 FROM offers o
-WHERE o.offer_code NOT IN (SELECT b.offer_code FROM bookings b);
+WHERE NOT EXISTS (
+    SELECT 1 FROM bookings b
+    WHERE b.offer_code = o.offer_code
+);
 
 -- @R14
 -- Movie pages: average user rating of 2026 releases with at least 20 reviews
@@ -193,11 +197,12 @@ ORDER BY v.city_id, collections DESC;
 
 -- @R19
 -- Distributor report: tickets sold for every June 2026 show of movie 2
--- Rewritten: first attempt joining bookings directly
+-- Rewritten: Flattened correlated subquery into LEFT JOIN + GROUP BY
+-- Fixed: Used LEFT JOIN and coalesce to ensure shows with 0 bookings are not omitted
 SELECT s.show_id, s.starts_at, s.screen_id,
-       sum(b.num_tickets) AS tickets_sold
+       coalesce(sum(b.num_tickets), 0) AS tickets_sold
 FROM shows s
-JOIN bookings b ON b.show_id = s.show_id AND b.status = 'CONFIRMED'
+LEFT JOIN bookings b ON b.show_id = s.show_id AND b.status = 'CONFIRMED'
 WHERE s.movie_id = 2
   AND s.starts_at >= '2026-06-01' AND s.starts_at < '2026-07-01'
 GROUP BY s.show_id, s.starts_at, s.screen_id
