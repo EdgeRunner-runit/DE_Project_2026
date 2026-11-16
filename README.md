@@ -17,6 +17,19 @@
 **Getting started:** **clone this repository and push it into your team's DE repo** (the DE repo you submitted in the form); the steps are in [`CHECKPOINTS.md`](CHECKPOINTS.md). Keep the structure shown in [Repository structure](#repository-structure-submit-exactly-this). Unzip `seed_data.zip` inside your project folder, but don't commit the CSV files. Deadlines are in [`CHECKPOINTS.md`](CHECKPOINTS.md). Then begin with Phase 1.
 
 ---
+### Checkpoint Deliverables & Quick Navigation
+
+| Checkpoint | Milestone Name | Status | Key Deliverable Links |
+|:---:|:---|:---:|:---|
+| **CP0** | Project Setup & Team Registration | **DONE** | [`team.json`](team.json) · [`queries/workload_30.sql`](queries/workload_30.sql) · [`benchmarks/run_benchmark.sh`](benchmarks/run_benchmark.sh) |
+| **CP1** | Schema & Normalization | **DONE** | [`docs/01_problem_understanding.md`](docs/01_problem_understanding.md) · [`docs/02_schema_design.md`](docs/02_schema_design.md) · [`sql/01_schema.sql`](sql/01_schema.sql) · [`sql/02_load_data.sql`](sql/02_load_data.sql) · [`diagrams/er_diagram.svg`](diagrams/er_diagram.svg) |
+| **CP2** | Baseline Query Timings | **DONE** | [`docs/03_baseline_timings.md`](docs/03_baseline_timings.md) · [`benchmarks/results/baseline/summary.csv`](benchmarks/results/baseline/summary.csv) |
+| **CP3** | Code Optimization & Rewrites | **DONE** | [`sql/05_indexes.sql`](sql/05_indexes.sql) · [`sql/06_optimized_queries.sql`](sql/06_optimized_queries.sql) · [`docs/04_optimization_report.md`](docs/04_optimization_report.md) · [`benchmarks/results/optimized/summary.csv`](benchmarks/results/optimized/summary.csv) |
+| **CP4** | Scalability & Partitioning | **DONE** | [`sql/08_partitioning.sql`](sql/08_partitioning.sql) · [`benchmarks/results/large/summary.csv`](benchmarks/results/large/summary.csv) · [`docs/05_scalability_report.md`](docs/05_scalability_report.md) |
+| **CP5** | Individual Analysis & Viva Prep | **DONE** | [`docs/06_individual_analysis_prep.md`](docs/06_individual_analysis_prep.md) · [`docs/00_architecture_overview.md`](docs/00_architecture_overview.md) |
+| **DBA** | Production Runbooks & Configs | **DONE** | [`config/postgresql.conf.recommended`](config/postgresql.conf.recommended) · [`config/pgbouncer.ini`](config/pgbouncer.ini) · [`docs/runbooks/`](docs/runbooks/) · [`Makefile`](Makefile) |
+
+
 
 ## Team details (fill in before you start)
 
