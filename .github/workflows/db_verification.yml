@@ -1,0 +1,71 @@
+name: PostgreSQL Schema & Query Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-database:
+    name: Test DDL, Ingestion, Optimization & Partitioning
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: bms_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Unzip seed dataset
+        run: |
+          unzip -q seed_data.zip
+
+      - name: Execute Phase 2 Schema Creation (sql/01_schema.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f sql/01_schema.sql
+
+      - name: Execute Phase 2 Data Ingestion (sql/02_load_data.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f sql/02_load_data.sql
+
+      - name: Run Relational Integrity Test Suite (tests/test_integrity.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f tests/test_integrity.sql
+
+      - name: Execute Phase 4 Index Strategy (sql/05_indexes.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f sql/05_indexes.sql
+
+      - name: Verify All 30 Optimized Queries (sql/06_optimized_queries.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f sql/06_optimized_queries.sql
+
+      - name: Execute Phase 5 Table Partitioning DDL (sql/08_partitioning.sql)
+        env:
+          PGPASSWORD: password
+        run: |
+          psql -h localhost -U postgres -d bms_test -f sql/08_partitioning.sql
