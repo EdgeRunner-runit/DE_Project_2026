@@ -6,7 +6,8 @@
     { "name": "Kushal Garg", "enrollment_no": "2501010241", "github": "kshlgrg" },
     { "name": "Aryan Damara", "enrollment_no": "2501010094", "github": "AryanDamara" }
   ],
+  "de_repo": "https://github.com/EdgeRunner-runit/DE_Project_2026",
+  "ap_repo": "https://github.com/kshlgrg/xChat_AP_2026",
   "postgres_version": "18.6",
   "laptop_used_for_benchmarks": "MacBook Pro (Apple M4)"
 }
-
