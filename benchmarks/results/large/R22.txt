@@ -1,0 +1,14 @@
+=== R22 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 0.081 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== R22 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 0.085 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== R22 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 0.098 ms
+Buffers: shared hit=439 read=0 dirtied=0

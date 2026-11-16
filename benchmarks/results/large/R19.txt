@@ -1,0 +1,14 @@
+=== R19 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 1.380 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== R19 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 1.420 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== R19 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 1.550 ms
+Buffers: shared hit=439 read=0 dirtied=0

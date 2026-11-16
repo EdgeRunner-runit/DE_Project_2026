@@ -1,0 +1,14 @@
+=== R17 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 0.271 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== R17 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 0.280 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== R17 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 0.304 ms
+Buffers: shared hit=439 read=0 dirtied=0

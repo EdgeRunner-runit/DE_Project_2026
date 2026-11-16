@@ -1,0 +1,14 @@
+=== W03 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 0.460 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== W03 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 0.490 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== W03 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 0.610 ms
+Buffers: shared hit=439 read=0 dirtied=0

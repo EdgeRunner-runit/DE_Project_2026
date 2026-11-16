@@ -1,0 +1,14 @@
+=== R25 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 235.600 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== R25 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 240.200 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== R25 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 250.650 ms
+Buffers: shared hit=439 read=0 dirtied=0

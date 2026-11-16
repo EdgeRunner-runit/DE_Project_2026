@@ -1,0 +1,14 @@
+=== R13 run 1 ===
+Planning Time: 0.120 ms
+Execution Time: 39.750 ms
+Buffers: shared hit=421 read=18 dirtied=0
+
+=== R13 run 2 ===
+Planning Time: 0.115 ms
+Execution Time: 41.800 ms
+Buffers: shared hit=439 read=0 dirtied=0
+
+=== R13 run 3 ===
+Planning Time: 0.118 ms
+Execution Time: 44.900 ms
+Buffers: shared hit=439 read=0 dirtied=0
