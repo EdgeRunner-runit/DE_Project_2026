@@ -1,0 +1,56 @@
+# =====================================================================
+# BookMyShow Production PostgreSQL Configuration Profile
+# Optimized for: 8-Core CPU, 16GB RAM, Fast NVMe/SSD Storage
+# Target: PostgreSQL 16+
+# Authors: Team T0132
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# 1. MEMORY & BUFFER POOL CONFIGURATION
+# ---------------------------------------------------------------------
+shared_buffers = 4GB                  # 25% of total system RAM (16GB)
+effective_cache_size = 12GB           # 75% of RAM (assumes OS file cache)
+work_mem = 64MB                       # Sized to prevent external merge disk spills in R14, R15, R21
+maintenance_work_mem = 1GB            # Accelerates VACUUM, CREATE INDEX, and table partitioning
+
+# ---------------------------------------------------------------------
+# 2. WRITE-AHEAD LOG (WAL) & CHECKPOINT TUNING
+# ---------------------------------------------------------------------
+wal_buffers = 16MB                    # Dedicated WAL ring buffer
+checkpoint_completion_target = 0.9    # Smooths disk I/O spikes across 90% of checkpoint interval
+checkpoint_timeout = 15min            # Balances crash recovery duration and write throughput
+max_wal_size = 16GB                   # Accommodates heavy bulk operations and surge ticket writes
+min_wal_size = 2GB
+
+# ---------------------------------------------------------------------
+# 3. QUERY PLANNER & DISK COST CONSTANTS
+# ---------------------------------------------------------------------
+random_page_cost = 1.1                # Fast NVMe/SSD random access cost relative to sequential (1.0)
+effective_io_concurrency = 200        # Allows OS/NVMe controller to issue parallel async prefetch requests
+default_statistics_target = 200       # Higher sampling resolution for showtimes and timestamp histograms
+
+# ---------------------------------------------------------------------
+# 4. PARALLEL QUERY EXECUTION
+# ---------------------------------------------------------------------
+max_worker_processes = 8              # Matches physical CPU core count
+max_parallel_workers = 8              # Total parallel worker budget
+max_parallel_workers_per_gather = 4   # Up to 4 workers per parallel aggregation (R11, R12, R15, R18, R24)
+max_parallel_maintenance_workers = 4  # Parallel index builds and autovacuum workers
+
+# ---------------------------------------------------------------------
+# 5. CONNECTION & CLIENT MANAGEMENT
+# ---------------------------------------------------------------------
+max_connections = 100                 # Direct DB connections (scaled to 1,000+ via PgBouncer)
+shared_preload_libraries = 'pg_stat_statements,btree_gist'
+pg_stat_statements.max = 10000
+pg_stat_statements.track = all
+
+# ---------------------------------------------------------------------
+# 6. AUTOVACUUM TUNING (Critical for High-Churn Seat Holds)
+# ---------------------------------------------------------------------
+autovacuum = on
+autovacuum_max_workers = 4
+autovacuum_naptime = 15s              # Frequent wakeups to inspect volatile booking tables
+autovacuum_vacuum_scale_factor = 0.05 # Trigger vacuum when 5% of tuples are dead
+autovacuum_analyze_scale_factor = 0.02
+autovacuum_vacuum_cost_limit = 2000   # Elevated I/O budget for vacuum worker
