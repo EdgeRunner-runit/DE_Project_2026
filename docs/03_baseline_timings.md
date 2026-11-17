@@ -10,12 +10,12 @@
 |-----------|-------|
 | **Hardware** | MacBook Pro (Apple M4) |
 | **PostgreSQL version** | 18.6 (Postgres.app) |
-| **Database** | `bms_capstone` — seed data only, no secondary indexes |
+| **Database** | `bms` — seed data only, no secondary indexes |
 | **Query execution method** | `EXPLAIN (ANALYZE, BUFFERS)` — PostgreSQL actual execution plan |
 | **Runs per query** | 3 (average of three reported) |
 | **Write queries (W01–W05)** | Wrapped in `BEGIN; … ROLLBACK;` — data unchanged after each run |
 | **Secondary indexes present** | None — only PK auto-indexes and UNIQUE auto-indexes from Phase 2 schema |
-| **Script used** | `benchmarks/run_benchmark.sh bms_capstone baseline 3` |
+| **Script used** | `benchmarks/run_benchmark.sh bms baseline 3` |
 | **Raw plans committed at** | `benchmarks/results/baseline/R01.txt … W05.txt` |
 
 ---
@@ -24,37 +24,37 @@
 
 | SQL Query | Type | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Average (ms) |
 |-----------|------|----------:|----------:|----------:|-------------:|
-| R01: Home page: movies showing in Bengaluru on 2 July 2026 and how many shows each has | READ | 12.909 | 4.924 | 5.048 | 7.627 |
-| R02: Showtimes page: shows of movie 2 in Bengaluru on 2 July 2026, grouped by cinema | READ | 4.686 | 3.967 | 3.833 | 4.162 |
-| R03: Seat layout: every seat of show 144446 and whether it is already sold | READ | 0.314 | 0.267 | 0.282 | 0.288 |
-| R04: Support: open a booking by its code | READ | 0.054 | 0.032 | 0.029 | 0.038 |
-| R05: "My bookings": customer 1331's upcoming confirmed shows | READ | 9.251 | 8.081 | 7.956 | 8.429 |
-| R06: Search: movies whose title contains "kalki" | READ | 0.155 | 0.140 | 0.135 | 0.143 |
-| R07: Cinema dashboard: occupancy of every show at venue 11 on 28 June 2026 | READ | 3.347 | 0.948 | 0.926 | 1.740 |
-| R08: Box office: top 10 movies by collections over the weekend of 26–28 June 2026 | READ | 16.730 | 14.609 | 14.098 | 15.146 |
-| R09: Seat-lock service: bookings still PENDING more than 10 minutes after they were made | READ | 6.045 | 6.221 | 6.383 | 6.216 |
-| R10: Cinema operations: consecutive shows with less than 30 minutes for cleaning (June 2026) | READ | 375.115 | 293.285 | 306.763 | 325.054 |
-| R11: Revenue mix: share of ticket revenue from recliner seats, per screen type | READ | 80.543 | 73.036 | 62.375 | 71.985 |
-| R12: Fans: customers who booked the same movie more than once | READ | 102.810 | 103.268 | 117.164 | 107.747 |
-| R13: Partnerships: offers that have never been redeemed | READ | 15.777 | 19.785 | 15.198 | 16.920 |
-| R14: Movie pages: average user rating of 2026 releases with at least 20 reviews | READ | 5.708 | 5.204 | 5.287 | 5.400 |
-| R15: Capacity planning: bookings by weekday and hour of booking | READ | 38.400 | 38.815 | 38.039 | 38.418 |
-| R16: Cinema partners: cancellation rate per venue for June 2026 shows | READ | 22.057 | 22.661 | 23.846 | 22.855 |
-| R17: Cinema operations: seats of screen 101 that were never sold for any June 2026 show | READ | 36.104 | 37.877 | 37.061 | 37.014 |
-| R18: Regional insights: collections per language per city in 2026 | READ | 66.484 | 68.717 | 69.751 | 68.317 |
-| R19: Distributor report: tickets sold for every June 2026 show of movie 2 | READ | 1425.800 | 1648.580 | 1456.091 | 1510.157 |
-| R20: Finance: daily collections and running total for June 2026 | READ | 16.625 | 16.242 | 16.605 | 16.491 |
-| R21: Loyalty: 20 customers with the most confirmed bookings in 2026 | READ | 47.933 | 46.734 | 46.303 | 46.990 |
-| R22: Support console: all bookings, newest first, page 4,001 (25 per page) | READ | 42.631 | 42.703 | 42.780 | 42.705 |
-| R23: Sign-in with mobile number | READ | 0.038 | 0.029 | 0.033 | 0.033 |
-| R24: Pricing: average price paid per seat class in each city (2026) | READ | 68.986 | 66.004 | 66.419 | 67.136 |
-| R25: Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026 | READ | 26.311 | 25.997 | 26.049 | 26.119 |
-| W01: Checkout: create a PENDING booking for 2 tickets of show 144446 | WRITE | 1.828 | 0.796 | 0.666 | 1.097 |
-| W02: Seat lock: the oldest PENDING booking adds 2 more seats | WRITE | 11.208 | 10.670 | 10.671 | 10.850 |
-| W03: Payment callback: confirm the oldest PENDING booking | WRITE | 2.404 | 0.670 | 0.661 | 1.245 |
-| W04: Seat-lock expiry: release seats held by PENDING bookings older than 10 minutes | WRITE | 8.639 | 8.968 | 8.523 | 8.710 |
-| W05: Pricing: 10% higher prices for all July weekend shows of movie 2 | WRITE | 6.445 | 5.841 | 5.648 | 5.978 |
-| **Total (sum of all 30 averages)** | | | | | **2,513.388** |
+| R01: Home page: movies showing in Bengaluru on 2 July 2026 and how many shows each has | READ | 13.720 | 9.887 | 9.601 | 11.069 |
+| R02: Showtimes page: shows of movie 2 in Bengaluru on 2 July 2026, grouped by cinema | READ | 9.637 | 5.845 | 6.622 | 7.368 |
+| R03: Seat layout: every seat of show 144446 and whether it is already sold | READ | 0.329 | 0.769 | 0.578 | 0.559 |
+| R04: Support: open a booking by its code | READ | 0.077 | 0.080 | 0.062 | 0.073 |
+| R05: "My bookings": customer 1331's upcoming confirmed shows | READ | 19.992 | 10.629 | 8.814 | 13.145 |
+| R06: Search: movies whose title contains "kalki" | READ | 0.079 | 0.077 | 0.153 | 0.103 |
+| R07: Cinema dashboard: occupancy of every show at venue 11 on 28 June 2026 | READ | 2.411 | 2.496 | 2.495 | 2.467 |
+| R08: Box office: top 10 movies by collections over the weekend of 26–28 June 2026 | READ | 25.887 | 21.133 | 19.189 | 22.070 |
+| R09: Seat-lock service: bookings still PENDING more than 10 minutes after they were made | READ | 6.562 | 7.021 | 6.603 | 6.729 |
+| R10: Cinema operations: consecutive shows with less than 30 minutes for cleaning (June 2026) | READ | 256.534 | 243.209 | 272.751 | 257.498 |
+| R11: Revenue mix: share of ticket revenue from recliner seats, per screen type | READ | 65.458 | 63.070 | 116.714 | 81.747 |
+| R12: Fans: customers who booked the same movie more than once | READ | 69.601 | 63.444 | 60.433 | 64.493 |
+| R13: Partnerships: offers that have never been redeemed | READ | 13.309 | 13.220 | 12.986 | 13.172 |
+| R14: Movie pages: average user rating of 2026 releases with at least 20 reviews | READ | 5.207 | 5.118 | 5.062 | 5.129 |
+| R15: Capacity planning: bookings by weekday and hour of booking | READ | 40.253 | 39.815 | 39.815 | 39.961 |
+| R16: Cinema partners: cancellation rate per venue for June 2026 shows | READ | 21.719 | 19.897 | 20.089 | 20.568 |
+| R17: Cinema operations: seats of screen 101 that were never sold for any June 2026 show | READ | 30.664 | 30.398 | 30.961 | 30.674 |
+| R18: Regional insights: collections per language per city in 2026 | READ | 67.089 | 68.902 | 68.186 | 68.059 |
+| R19: Distributor report: tickets sold for every June 2026 show of movie 2 | READ | 1319.660 | 1328.818 | 1361.594 | 1336.691 |
+| R20: Finance: daily collections and running total for June 2026 | READ | 15.900 | 16.165 | 16.166 | 16.077 |
+| R21: Loyalty: 20 customers with the most confirmed bookings in 2026 | READ | 47.194 | 47.442 | 47.404 | 47.347 |
+| R22: Support console: all bookings, newest first, page 4,001 (25 per page) | READ | 42.730 | 42.893 | 43.207 | 42.943 |
+| R23: Sign-in with mobile number | READ | 0.032 | 0.028 | 0.029 | 0.030 |
+| R24: Pricing: average price paid per seat class in each city (2026) | READ | 64.200 | 64.266 | 62.505 | 63.657 |
+| R25: Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026 | READ | 24.249 | 24.424 | 23.963 | 24.212 |
+| W01: Checkout: create a PENDING booking for 2 tickets of show 144446 | WRITE | 0.847 | 0.625 | 0.608 | 0.693 |
+| W02: Seat lock: the oldest PENDING booking adds 2 more seats | WRITE | 19.695 | 18.216 | 17.653 | 18.521 |
+| W03: Payment callback: confirm the oldest PENDING booking | WRITE | 8.594 | 8.358 | 8.369 | 8.440 |
+| W04: Seat-lock expiry: release seats held by PENDING bookings older than 10 minutes | WRITE | 8.302 | 8.272 | 7.934 | 8.169 |
+| W05: Pricing: 10% higher prices for all July weekend shows of movie 2 | WRITE | 5.663 | 5.338 | 5.210 | 5.404 |
+| **Total (sum of all 30 averages)** | | | | | **2,116.468** |
 
 ---
 
@@ -64,15 +64,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R01 — Home page: movies showing in Bengaluru on 2 July 2026 · avg 7.627 ms
+### R01 — Home page: movies showing in Bengaluru on 2 July 2026 · avg 11.069 ms
 
 **Scan types:** Index Scan on `movies_pkey` · Seq Scan on `screens` · Seq Scan on `venues` · Index Scan on `no_overlapping_shows` (shows)
 
-**Why slow:** The filter `DATE(s.starts_at) = '2026-07-02'` wraps `starts_at` in a function, making it **non-sargable** — the GiST exclusion index on `shows` cannot perform a range scan. PostgreSQL falls back to scanning `venues` and `screens` sequentially to find city_id=1, then fetches matching shows. Run 1 is a cold-cache outlier (12.9 ms) vs warm runs (~5 ms).
+**Why slow:** The filter `DATE(s.starts_at) = '2026-07-02'` wraps `starts_at` in a function, making it **non-sargable** — the GiST exclusion index on `shows` cannot perform a range scan. PostgreSQL falls back to scanning `venues` and `screens` sequentially to find city_id=1, then fetches matching shows. Run 1 is a cold-cache outlier (13.7 ms) vs warm runs (~9.7 ms).
 
 ---
 
-### R02 — Showtimes page: movie 2 in Bengaluru on 2 July 2026 · avg 4.162 ms
+### R02 — Showtimes page: movie 2 in Bengaluru on 2 July 2026 · avg 7.368 ms
 
 **Scan types:** Seq Scan on `screens` · Seq Scan on `venues` · Index Scan on `no_overlapping_shows` (shows)
 
@@ -80,7 +80,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R03 — Seat layout: show 144446 · avg 0.288 ms
+### R03 — Seat layout: show 144446 · avg 0.559 ms
 
 **Scan types:** Index Scan on `shows_pkey` · Index Scan on `uq_seats_screen_row_number` (seats) · Index Only Scan on `booking_seats_pkey`
 
@@ -88,7 +88,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R04 — Support: open a booking by code · avg 0.038 ms
+### R04 — Support: open a booking by code · avg 0.073 ms
 
 **Scan types:** Index Scan on `bookings_booking_code_key`
 
@@ -96,7 +96,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R05 — My bookings: customer 1331's upcoming confirmed shows · avg 8.429 ms
+### R05 — My bookings: customer 1331's upcoming confirmed shows · avg 13.145 ms
 
 **Scan types:** Seq Scan on `bookings` · Index Scan on `shows_pkey` · Seq Scan on `movies` · Seq Scan on `screens` · Seq Scan on `venues`
 
@@ -104,7 +104,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R06 — Search: movies containing "kalki" · avg 0.143 ms
+### R06 — Search: movies containing "kalki" · avg 0.103 ms
 
 **Scan types:** Seq Scan on `movies`
 
@@ -112,15 +112,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R07 — Cinema dashboard: venue 11 occupancy on 28 June 2026 · avg 1.740 ms
+### R07 — Cinema dashboard: venue 11 occupancy on 28 June 2026 · avg 2.467 ms
 
 **Scan types:** Index Scan on `uq_screens_venue_screen_name` (screens) · Bitmap Heap Scan on `shows` · Bitmap Index Scan on `no_overlapping_shows` · Index Only Scan on `booking_seats_pkey`
 
-**Why decent at baseline:** The venue filter on screens uses the UNIQUE index, then a bitmap scan finds shows via the GiST exclusion index. The `starts_at::date` cast is non-sargable, but the GiST index still supports a partial range evaluation. Run 1 is a warm-up outlier (3.3 ms).
+**Why decent at baseline:** The venue filter on screens uses the UNIQUE index, then a bitmap scan finds shows via the GiST exclusion index. The `starts_at::date` cast is non-sargable, but the GiST index still supports a partial range evaluation.
 
 ---
 
-### R08 — Box office: top 10 movies, weekend 26–28 June 2026 · avg 15.146 ms
+### R08 — Box office: top 10 movies, weekend 26–28 June 2026 · avg 22.070 ms
 
 **Scan types:** Seq Scan on `bookings` · Seq Scan on `shows` · Seq Scan on `movies`
 
@@ -128,7 +128,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R09 — Pending bookings older than 10 minutes · avg 6.216 ms
+### R09 — Pending bookings older than 10 minutes · avg 6.729 ms
 
 **Scan types:** Seq Scan on `bookings`
 
@@ -136,7 +136,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R10 — Shows with <30 min cleaning gap (June 2026) · avg 325.054 ms ⚠️ SECOND SLOWEST
+### R10 — Shows with <30 min cleaning gap (June 2026) · avg 257.498 ms ⚠️ SECOND SLOWEST
 
 **Scan types:** Seq Scan on `shows` (both sides of self-join)
 
@@ -144,7 +144,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R11 — Revenue mix: recliner seat share per screen type · avg 71.985 ms
+### R11 — Revenue mix: recliner seat share per screen type · avg 81.747 ms
 
 **Scan types:** Seq Scan on `booking_seats` · Seq Scan on `seats` · Seq Scan on `screens`
 
@@ -152,7 +152,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R12 — Fans: customers who booked the same movie more than once · avg 107.747 ms
+### R12 — Fans: customers who booked the same movie more than once · avg 64.493 ms
 
 **Scan types:** Seq Scan on `bookings` · Seq Scan on `shows`
 
@@ -160,7 +160,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R13 — Offers never redeemed · avg 16.920 ms ⚠️ SQL CORRECTNESS BUG
+### R13 — Offers never redeemed · avg 13.172 ms ⚠️ SQL CORRECTNESS BUG
 
 **Scan types:** Seq Scan on `offers` · Seq Scan on `bookings`
 
@@ -170,7 +170,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R14 — Movie ratings: 2026 releases with ≥20 reviews · avg 5.400 ms
+### R14 — Movie ratings: 2026 releases with ≥20 reviews · avg 5.129 ms
 
 **Scan types:** Seq Scan on `movie_reviews` · Seq Scan on `movies`
 
@@ -178,15 +178,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R15 — Booking heatmap: by weekday and hour · avg 38.418 ms
+### R15 — Booking heatmap: by weekday and hour · avg 39.961 ms
 
 **Scan types:** Seq Scan on `bookings`
 
-**Why unavoidable full scan:** `EXTRACT(ISODOW FROM booked_at)` and `EXTRACT(HOUR FROM booked_at)` are expression-based GROUP BY over all bookings — no selective filter, must read all 150k rows. A covering index on `booked_at` can avoid heap lookups, but the full scan is fundamentally required. Very stable timing (38.0–38.8 ms across 3 runs).
+**Why unavoidable full scan:** `EXTRACT(ISODOW FROM booked_at)` and `EXTRACT(HOUR FROM booked_at)` are expression-based GROUP BY over all bookings — no selective filter, must read all 150k rows. A covering index on `booked_at` can avoid heap lookups, but the full scan is fundamentally required. Very stable timing (39.8–40.3 ms across 3 runs).
 
 ---
 
-### R16 — Cancellation rate per venue, June 2026 · avg 22.855 ms
+### R16 — Cancellation rate per venue, June 2026 · avg 20.568 ms
 
 **Scan types:** Seq Scan on `bookings` · Seq Scan on `shows` · Seq Scan on `screens` · Seq Scan on `venues`
 
@@ -194,7 +194,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R17 — Seats on screen 101 never sold in June 2026 · avg 37.014 ms
+### R17 — Seats on screen 101 never sold in June 2026 · avg 30.674 ms
 
 **Scan types:** Seq Scan on `booking_seats` · Seq Scan on `shows` · Index Scan on `uq_seats_screen_row_number` (seats)
 
@@ -202,7 +202,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R18 — Regional collections: per language per city in 2026 · avg 68.317 ms
+### R18 — Regional collections: per language per city in 2026 · avg 68.059 ms
 
 **Scan types:** Seq Scan on `bookings` · Seq Scan on `shows` · Seq Scan on `movies` · Seq Scan on `screens` · Seq Scan on `venues`
 
@@ -210,7 +210,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R19 — Distributor: tickets sold per June 2026 show of movie 2 · avg 1510.157 ms 🔴 SLOWEST
+### R19 — Distributor: tickets sold per June 2026 show of movie 2 · avg 1336.691 ms 🔴 SLOWEST
 
 **Scan types:** Seq Scan on `shows` · Seq Scan on `bookings` (repeated per show)
 
@@ -218,7 +218,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R20 — Finance: daily collections and running total, June 2026 · avg 16.491 ms
+### R20 — Finance: daily collections and running total, June 2026 · avg 16.077 ms
 
 **Scan types:** Seq Scan on `bookings`
 
@@ -226,7 +226,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R21 — Loyalty: top 20 customers by confirmed bookings in 2026 · avg 46.990 ms
+### R21 — Loyalty: top 20 customers by confirmed bookings in 2026 · avg 47.347 ms
 
 **Scan types:** Seq Scan on `bookings`
 
@@ -234,15 +234,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R22 — Support console: all bookings, page 4,001 (OFFSET 100,000) · avg 42.705 ms ⚠️ INTENTIONAL SLOW
+### R22 — Support console: all bookings, page 4,001 (OFFSET 100,000) · avg 42.943 ms ⚠️ INTENTIONAL SLOW
 
 **Scan types:** Seq Scan on `bookings`
 
-**Why slow (by design):** `OFFSET 100000 LIMIT 25` forces PostgreSQL to scan and discard 100,000 rows before returning 25. Cost grows linearly with page number — this is the **deep pagination trap** intentionally included in the workload. The fix is **keyset pagination**: replace `OFFSET` with `WHERE booked_at < $last_seen_value ORDER BY booked_at DESC LIMIT 25`. Notably stable timing across all 3 runs (42.6–42.8 ms), confirming it always reads ~100k rows.
+**Why slow (by design):** `OFFSET 100000 LIMIT 25` forces PostgreSQL to scan and discard 100,000 rows before returning 25. Cost grows linearly with page number — this is the **deep pagination trap** intentionally included in the workload. The fix is **keyset pagination**: replace `OFFSET` with `WHERE booked_at < $last_seen_value ORDER BY booked_at DESC LIMIT 25`. Notably stable timing across all 3 runs (42.7–43.2 ms), confirming it always reads ~100k rows.
 
 ---
 
-### R23 — Sign-in with mobile number · avg 0.033 ms 🟢 FASTEST
+### R23 — Sign-in with mobile number · avg 0.030 ms 🟢 FASTEST
 
 **Scan types:** Index Scan on `customers_phone_key`
 
@@ -250,15 +250,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### R24 — Avg price per seat class per city (2026) · avg 67.136 ms
+### R24 — Avg price per seat class per city (2026) · avg 63.657 ms
 
 **Scan types:** Seq Scan on `booking_seats` · Seq Scan on `seats` · Seq Scan on `screens` · Seq Scan on `venues`
 
-**Why slow:** Full scan of 300k `booking_seats` joined to 94k seats, 490 screens, and 140 venues. No filter reduces the dataset — it aggregates all historical data. A covering index on `seats(seat_id, screen_id, seat_class)` would avoid heap lookups on seats.
+**Why slow:** Full scan of 300k `booking_seats` joined to 94k seats, 490 screens, and 140 venues. No filter reduces the dataset — it aggregates all historical data. A covering index on `seats(seat_id, screen_id, seat_class)` would at minimum eliminate heap fetches.
 
 ---
 
-### R25 — Late-night show occupancy, June 2026 · avg 26.119 ms
+### R25 — Late-night show occupancy, June 2026 · avg 24.212 ms
 
 **Scan types:** Seq Scan on `booking_seats` · Seq Scan on `shows` · Seq Scan on `screens`
 
@@ -266,15 +266,15 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### W01 — Checkout: create PENDING booking · avg 1.097 ms
+### W01 — Checkout: create PENDING booking · avg 0.693 ms
 
 **Scan types:** (no scan — plain INSERT)
 
-**Why fast:** A single-row INSERT with no SELECT; PK uniqueness check is an index lookup. Timing variance (0.7–1.8 ms) reflects normal write path overhead. Write queries measured inside `BEGIN … ROLLBACK`.
+**Why fast:** A single-row INSERT with no SELECT; PK uniqueness check is an index lookup. Timing variance (0.6–0.8 ms) reflects normal write path overhead. Write queries measured inside `BEGIN … ROLLBACK`.
 
 ---
 
-### W02 — Seat lock: oldest PENDING booking adds 2 more seats · avg 10.850 ms
+### W02 — Seat lock: oldest PENDING booking adds 2 more seats · avg 18.521 ms
 
 **Scan types:** Index Scan on `bookings_pkey` · Index Scan on `seats_pkey` · Index Scan on `shows_pkey` · Index Only Scan on `booking_seats_pkey`
 
@@ -282,7 +282,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### W03 — Payment callback: confirm oldest PENDING booking · avg 1.245 ms
+### W03 — Payment callback: confirm oldest PENDING booking · avg 8.440 ms
 
 **Scan types:** Index Scan on `bookings_pkey`
 
@@ -290,7 +290,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### W04 — Seat-lock expiry: delete expired seats · avg 8.710 ms
+### W04 — Seat-lock expiry: delete expired seats · avg 8.169 ms
 
 **Scan types:** Seq Scan on `bookings` · Index Scan on `uq_booking_seats_booking_seat`
 
@@ -298,7 +298,7 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 ---
 
-### W05 — Surge pricing: 10% higher for July weekend shows of movie 2 · avg 5.978 ms
+### W05 — Surge pricing: 10% higher for July weekend shows of movie 2 · avg 5.404 ms
 
 **Scan types:** Seq Scan on `shows`
 
@@ -310,11 +310,11 @@ For each query, the scan type is sourced from the final EXPLAIN (ANALYZE, BUFFER
 
 | Metric | Value |
 |--------|-------|
-| **Total baseline time (sum of 30 averages)** | **2,513.388 ms** |
-| **Slowest query** | R19 — 1,510.157 ms (correlated subquery N+1 anti-pattern) |
-| **Second slowest** | R10 — 325.054 ms (shows self-join, quadratic without index) |
-| **Fastest query** | R23 — 0.033 ms (UNIQUE index point lookup on phone) |
-| **Second fastest** | R04 — 0.038 ms (UNIQUE index point lookup on booking_code) |
+| **Total baseline time (sum of 30 averages)** | **2,116.468 ms** |
+| **Slowest query** | R19 — 1,336.691 ms (correlated subquery N+1 anti-pattern) |
+| **Second slowest** | R10 — 257.498 ms (shows self-join, quadratic without index) |
+| **Fastest query** | R23 — 0.030 ms (UNIQUE index point lookup on phone) |
+| **Second fastest** | R04 — 0.073 ms (UNIQUE index point lookup on booking_code) |
 | **Dominant scan type** | Seq Scan (expected at baseline — no secondary indexes present) |
 | **SQL bug found** | R13 — `NOT IN` with NULLs always returns empty; fix with `NOT EXISTS` |
 | **Intentionally slow query** | R22 — `OFFSET 100000` deep pagination trap |
@@ -337,10 +337,10 @@ All timing values in the table above were cross-verified against the raw EXPLAIN
 
 | Query | Doc values (Run1 / Run2 / Run3 ms) | Raw plan file `Execution Time:` values | Match? |
 |-------|-------------------------------------|----------------------------------------|:------:|
-| R10 | 375.115 / 293.285 / 306.763 | 375.115 / 293.285 / 306.763 | ✅ |
-| R19 | 1425.800 / 1648.580 / 1456.091 | 1425.800 / 1648.580 / 1456.091 | ✅ |
-| R23 | 0.038 / 0.029 / 0.033 | 0.038 / 0.029 / 0.033 | ✅ |
-| W02 | 11.208 / 10.670 / 10.671 | 11.208 / 10.670 / 10.671 | ✅ |
-| R01 | 12.909 / 4.924 / 5.048 | 12.909 / 4.924 / 5.048 | ✅ |
+| R10 | 256.534 / 243.209 / 272.751 | 256.534 / 243.209 / 272.751 | ✅ |
+| R19 | 1319.660 / 1328.818 / 1361.594 | 1319.660 / 1328.818 / 1361.594 | ✅ |
+| R23 | 0.032 / 0.028 / 0.029 | 0.032 / 0.028 / 0.029 | ✅ |
+| W02 | 19.695 / 18.216 / 17.653 | 19.695 / 18.216 / 17.653 | ✅ |
+| R01 | 13.720 / 9.887 / 9.601 | 13.720 / 9.887 / 9.601 | ✅ |
 
 **All 30 query timings in this document are sourced directly from their respective raw plan `.txt` files and have not been manually adjusted or estimated.**
