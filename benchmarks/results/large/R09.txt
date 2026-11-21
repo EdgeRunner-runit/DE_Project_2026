@@ -1,14 +1,42 @@
 === R09 run 1 ===
-Planning Time: 0.120 ms
-Execution Time: 0.041 ms
-Buffers: shared hit=421 read=18 dirtied=0
-
+Sort  (cost=18.46..18.71 rows=100 width=18) (actual time=0.462..0.464 rows=85.00 loops=1)
+  Sort Key: booked_at
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=74 read=123
+  ->  Index Scan using idx_bookings_pending_id on bookings  (cost=0.14..15.14 rows=100 width=18) (actual time=0.013..0.448 rows=85.00 loops=1)
+        Filter: (booked_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:10:00'::interval))
+        Rows Removed by Filter: 108
+        Index Searches: 1
+        Buffers: shared hit=71 read=123
+Planning:
+  Buffers: shared hit=274 read=3
+Planning Time: 0.518 ms
+Execution Time: 0.478 ms
 === R09 run 2 ===
-Planning Time: 0.115 ms
-Execution Time: 0.044 ms
-Buffers: shared hit=439 read=0 dirtied=0
-
+Sort  (cost=18.46..18.71 rows=100 width=18) (actual time=0.249..0.251 rows=85.00 loops=1)
+  Sort Key: booked_at
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=197
+  ->  Index Scan using idx_bookings_pending_id on bookings  (cost=0.14..15.14 rows=100 width=18) (actual time=0.006..0.238 rows=85.00 loops=1)
+        Filter: (booked_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:10:00'::interval))
+        Rows Removed by Filter: 108
+        Index Searches: 1
+        Buffers: shared hit=194
+Planning:
+  Buffers: shared hit=277
+Planning Time: 0.565 ms
+Execution Time: 0.264 ms
 === R09 run 3 ===
-Planning Time: 0.118 ms
-Execution Time: 0.050 ms
-Buffers: shared hit=439 read=0 dirtied=0
+Sort  (cost=18.46..18.71 rows=100 width=18) (actual time=0.223..0.224 rows=85.00 loops=1)
+  Sort Key: booked_at
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=197
+  ->  Index Scan using idx_bookings_pending_id on bookings  (cost=0.14..15.14 rows=100 width=18) (actual time=0.005..0.212 rows=85.00 loops=1)
+        Filter: (booked_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:10:00'::interval))
+        Rows Removed by Filter: 108
+        Index Searches: 1
+        Buffers: shared hit=194
+Planning:
+  Buffers: shared hit=277
+Planning Time: 0.527 ms
+Execution Time: 0.236 ms

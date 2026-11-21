@@ -1,14 +1,27 @@
 === R04 run 1 ===
-Planning Time: 0.120 ms
-Execution Time: 0.042 ms
-Buffers: shared hit=421 read=18 dirtied=0
-
+Index Scan using bookings_booking_code_key on bookings  (cost=0.43..8.45 rows=1 width=38) (actual time=0.543..0.544 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared read=4
+Planning:
+  Buffers: shared hit=233 read=12
+Planning Time: 1.325 ms
+Execution Time: 0.560 ms
 === R04 run 2 ===
-Planning Time: 0.115 ms
-Execution Time: 0.046 ms
-Buffers: shared hit=439 read=0 dirtied=0
-
+Index Scan using bookings_booking_code_key on bookings  (cost=0.43..8.45 rows=1 width=38) (actual time=0.011..0.011 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=245
+Planning Time: 0.472 ms
+Execution Time: 0.026 ms
 === R04 run 3 ===
-Planning Time: 0.118 ms
-Execution Time: 0.056 ms
-Buffers: shared hit=439 read=0 dirtied=0
+Index Scan using bookings_booking_code_key on bookings  (cost=0.43..8.45 rows=1 width=38) (actual time=0.009..0.009 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=245
+Planning Time: 0.440 ms
+Execution Time: 0.024 ms
